@@ -10,7 +10,7 @@ if(empty($user)){
 }
 
 $id = isset($_GET['id']) && $_GET['id']!='' && $_GET['id']>0 ?$_GET['id'] : null;
-if($user->getPerfil()!='TI' && $id != $user->getId()){
+if($user->getPerfil()!==1 && $id != $user->getId()){
 	echo '<meta http-equiv="refresh" content="0; url=index.php?p=Usuarios&id='.$user->getId().'" />';
 	exit;
 }
@@ -103,6 +103,7 @@ $idForm = uniqid('usuarios');
 					$Usuario['ativado'] = $acao=='EDIT' ? $Usuario['ativado']: 1;
 					$login = $Usuario['login'];
 					$login = Utils::isCPF(substr($login,3,11)) ? Utils::setMask(substr($login,3,11), '###.###.###-##') : (Utils::isCNPJ($login) ? Utils::setMask($login, '##.###.###/####-##') : $login);
+					$perfil = $Usuario['perfil'];
 
 					$idUsuario = $Usuario['codUser'];	?>
 					<div class="font-weight-bold font-small text-left">
@@ -121,47 +122,63 @@ $idForm = uniqid('usuarios');
 						<input type="hidden" name="id" value="<?= $idUsuario; ?>" />
 						<input type="hidden" name="login" value="<?= $login; ?>" />
 
-						<div class="form-group col-6 col-lg-6">
+						<div class="col-6 col-lg-6">
+						  <div class="form-group">
 							<label class="font-weight-bold d-block">Data de Cadastro:</label>
 							<div class="form-control fakeInput" style="font-size: 17px;"><?= date('d/m/Y H:i:s', strtotime($Usuario['data_cadastro'])); ?></div>
+						  </div>
 						</div>
-						<div class="form-group col-6 col-lg-6">
+						<div class="col-6 col-lg-6">
+						  <div class="form-group">
 							<label class="font-weight-bold d-block">Login:</label>
 							<div class="form-control fakeInput" style="font-size: 17px;"><?= $login ?></div>
+						  </div>
 						</div>
 					<?php
 					  }  ?>
-						<div class="form-group col-6 col-lg-6">
+						<div class="col-6 col-lg-6">
+						  <div class="form-group">
 							<label class="font-weight-bold d-block required" for="nome">Nome:</label>
 							<input class="form-control typeAlphaNum" required type="text" maxlength="100" name="nome" id="nome" value="<?= $Usuario['nome']; ?>" placeholder="Nome" />
+						  </div>
 						</div>
-						<div class="form-group col-6 col-lg-6">
+						<div class="col-6 col-lg-6">
+						  <div class="form-group">
 							<label class="font-weight-bold d-block required" for="email">Email:</label>
 							<input class="form-control" required type="email" maxlength="100" name="email" id="email" value="<?= $Usuario['email']; ?>" placeholder="user@mail.com" />
+						  </div>
 						</div>
 					<?php
 						if($Usuario['data_cadastro']==''){ ?>
-							<div class="form-group col-6 col-lg-6">
+							<div class="col-6 col-lg-6">
+							  <div class="form-group">
 								<label class="font-weight-bold d-block required">CPF/CNPJ:</label>
 								<input class="form-control" required type="text" minlength="11" maxlength="18" name="login" id="login" placeholder="000.000.000" />
+							  </div>
 							</div>
 							<div class="form-group col-6 col-lg-6">
+							  <div class="form-group">
 								<label class="required text-left negrito" for="senha">Senha:</label>
 								<input type="password" name="senha" id="senha" required class="form-control form-border text-left" autocomplete="current-password" placeholder="*****" />
+							  </div>
 							</div>
 						<?php
 						}  ?>
 
 					<?php
-						if($user->getPerfil()=='TITI'){ ?>
-						<div class="form-group col-4 col-lg-4">
+						if($user->getPerfil()===1){ ?>
+						<div class="col-4 col-lg-4">
+						  <div class="form-group">
 							<label class="font-weight-bold d-block required">Perfil:</label>
-							<div class="switchContainer"><?php
-								$valorBol =$Usuario['perfil']=='TI' ? 'on' : 'off';
-								$checado = $valorBol=='on' ? ' checked' : ''; ?>
-								<input type="checkbox" id="Administrador" name="Administrador" value="<?= $valorBol;?>" <?= $checado;?> class="switcher" role="switcher" />
-								<label class="switch" for="Administrador" style="color:#777">Administrador</label>
-							</div>
+							<select class="form-control" name="perfil" id="perfil">
+							<?php
+							foreach(array('','Gerencia','Contabilidade','Finanças') as $key => $val){
+								$checado = $key==$perfil ? ' selected':'';
+								echo "<option {$checado} value='{$key}'>{$val}</option>";
+							}
+							?>
+							</select>
+						  </div>
 						</div>
 						<?php
 						}
@@ -173,7 +190,7 @@ $idForm = uniqid('usuarios');
 					<div class="form-group col-12">
 						<div class="row">
 							<div class="col-4">
-								<a href="index.php<?= $acao!='LIST' && $user->getPerfil()=='TI'? '?p=Usuarios' : '?'; ?>" class="btn btn-primary"><i class="fas fa-arrow-left mr-2"></i>Voltar</a>
+								<a href="index.php<?= $acao!='LIST' && $user->getPerfil()===1? '?p=Usuarios' : '?'; ?>" class="btn btn-primary"><i class="fas fa-arrow-left mr-2"></i>Voltar</a>
 							</div>
 							<div class="col-8 text-right">
 							<?php
@@ -215,9 +232,9 @@ $idForm = uniqid('usuarios');
 					.then(rs => {
 						if(rs.rs!=-1){
 							if(rs.rs!=1){
-								window.alert(rs.msg!='' ? rs.msg : 'Error: ');
+								Swall.alertError('Atenção:',rs.msg!='' ? rs.msg : 'Error: ');
 							} else{
-								window.alert(rs.msg ? rs.msg : 'Salvo com sucesso !')?.then(()=>{ window.location.reload(); });
+								Swall.alertSuccess('Atenção:',rs.msg ? rs.msg : 'Salvo com sucesso !')?.then(()=>{ window.location.reload(); });
 							}
 						}
 					});

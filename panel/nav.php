@@ -34,7 +34,7 @@
 						<a href="index.php?p=Usuarios&id=<?= $user->getId(); ?>" class="nav-link" style="color: #000;">Meu Usuario</a>
 					</li>
 					<?php
-					  if($user->getPerfil()=='TI'){ ?>
+					  if($user->getPerfil()===1){ ?>
 					<li class="dropdown-item">
 						<a href="index.php?p=Usuarios" class="nav-link" style="color: #000;">Lista de Usuarios</a>
 					</li><?php

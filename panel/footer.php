@@ -8,20 +8,13 @@
 	<script type="application/javascript" src="<?= URL_HOME; ?>assets/js/popper.min.js"></script>
 	<script type="application/javascript" src="<?= URL_HOME; ?>assets/js/bootstrap.min.js"></script>
 <SCRIPT>
-	class Swal{
-		static alertMsg(title, msg, type){
-			return swal(title, msg, {
-				icon : type,
-				buttons: {
-					confirm: {
-					  className :  type=='error' ? 'btn btn-danger' : 'btn btn-success'
-					}
-				},
-			});
-		}
+	class Swall{
 		static alertError(title, msg){
-			return swal(title, msg, {
-				icon : 'error',
+			Swal.fire({
+				title: title,
+				text:  msg,
+				icon: "error",
+				confirmButtonText: "Ok",
 				buttons: {
 					confirm: {
 					  className :  'btn btn-danger'
@@ -30,8 +23,11 @@
 			});
 		}
 		static alertSuccess(title, msg){
-			return swal(title, msg, {
-				icon : 'success',
+			Swal.fire({
+				title: title,
+				text:  msg,
+				icon: "success",
+				confirmButtonText: "Ok",
 				buttons: {
 					confirm: {
 					  className :  'btn btn-success'

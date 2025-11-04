@@ -13,7 +13,6 @@
 
 		public function __construct($id=null){
 			$Sql = new Sql();
-//SELECT u.codUser, u.nome as codnome, u.perfil, p.* FROM sm_usuarios u INNER JOIN sm_pessoas p ON (p.cpf = u.login) WHERE u.codUser > 0;
 			$data = $id!=null && $id>0 ? $Sql->select1("SELECT * FROM sm_usuarios WHERE ativado=1 AND codUser = {$id} ORDER BY 1 DESC LIMIT 1;") : array();
 			foreach(($data!=null ? $data : array()) as $key => $val){
 				switch($key){
@@ -132,11 +131,11 @@
 			$rs = false;
 
 			if($user->getId()>0){
-			  if($user->getPerfil()=='TI'){
+			  if($user->getPerfil()===1){
 				$Usuario['nome'] = isset($PUT['nome']) ? $PUT['nome'] : null;
 				$Usuario['email'] = isset($PUT['email']) ? $PUT['email'] : null;
 				$Usuario['login'] = isset($PUT['login']) ? Utils::soNumeros($PUT['login']): null;
-				$Usuario['perfil'] = isset($PUT['Administrador']) && $PUT['Administrador']==1 ? 'TI' : (strlen($Usuario['login'])==11 ? 'PF' : 'PJ');
+				$Usuario['perfil'] = isset($PUT['perfil']) ? intval($PUT['perfil']) :9;
 				$Usuario['senha'] = isset($PUT['senha']) ? md5($PUT['senha']) : md5($Usuario['email']);
 				$Usuario['ativado'] = isset($PUT['ativado']) ? boolval($PUT['ativado']) : true;
 
@@ -163,17 +162,16 @@
 			$rs = false;
 
 			if($user->getId()>0){
-			  if($user->getPerfil()=='TI' || ($idUsuario>0 && $idUsuario == $user->getId())){
-				//$Usuario['login'] = isset($PUT['login']) ? Utils::soNumeros($PUT['login']): null;
+			  if($user->getPerfil()===1 || ($idUsuario>0 && $idUsuario == $user->getId())){
 				$Usuario['nome'] = isset($PUT['nome']) ? $PUT['nome'] : null;
 				$Usuario['email'] = isset($PUT['email']) ? $PUT['email'] : null;
-				//$Usuario['perfil'] = isset($PUT['Administrador']) && $PUT['Administrador']==1 ? 'TI' : (strlen($Usuario['login'])==11 ? 'PF' : 'PJ');
+				$Usuario['perfil'] = isset($PUT['perfil']) ? intval($PUT['perfil']) :9;
 				$Usuario['ativado'] = isset($PUT['ativado']) ? boolval($PUT['ativado']) : null;
 
 				if($Usuario['nome']!=null && $Usuario['email']!=null){
 					$rs = $Sql->updateInstance('sm_usuarios', array('codUser'=>$idUsuario), $Usuario);
 
-					return $rs>0 ? intval($idUsuario) : "Erro ao salvar usuario.";
+					return $rs ? true : "Erro ao salvar usuario.";
 				}
 				else{ return "Campos obrigatórios necessários."; }
 			 }

@@ -84,12 +84,12 @@ input, .form-control{
 				.then(rs => {
 					if(rs.rs!=-1){
 						if(rs.rs!=1){
-							window.alert(rs.msg!='' ? rs.msg : 'Error: ');
+							Swall.alertError('Atenção:',rs.msg!='' ? rs.msg : 'Error: ');
 						} else{
-							window.alert( rs.msg ? rs.msg : 'Salvo com sucesso !')?.then(()=>{ form.reset(); });
+							Swall.alertSuccess('Mensagem:', rs.msg ? rs.msg : 'Salvo com sucesso !')?.then(()=>{ form.reset(); });
 						}
 					}
 				});
-			} else{ window.alert('As senhas devem ser iguais.'); }
+			} else{ Swall.alertError('Atenção:','As senhas devem ser iguais.'); }
 		}
 	</script>
