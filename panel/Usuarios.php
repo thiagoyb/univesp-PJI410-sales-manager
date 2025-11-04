@@ -101,8 +101,8 @@ $idForm = uniqid('usuarios');
 						$Usuario[$s] = isset($Usuario[$s]) && $Usuario[$s]!=NULL ? $Usuario[$s]: '';
 					}
 					$Usuario['ativado'] = $acao=='EDIT' ? $Usuario['ativado']: 1;
-					$login = ltrim($Usuario['login'],0);
-					$login = Utils::isCPF($login) ? Utils::setMask($login, '###.###.###-##') : (Utils::isCNPJ($login) ? Utils::setMask($login, '##.###.###/####-##') : $login);					
+					$login = $Usuario['login'];
+					$login = Utils::isCPF(substr($login,3,11)) ? Utils::setMask(substr($login,3,11), '###.###.###-##') : (Utils::isCNPJ($login) ? Utils::setMask($login, '##.###.###/####-##') : $login);
 
 					$idUsuario = $Usuario['codUser'];	?>
 					<div class="font-weight-bold font-small text-left">
@@ -222,7 +222,7 @@ $idForm = uniqid('usuarios');
 						}
 					});
 				}
-				else Swal.alertError('Error', 'CPF ou CNPJ invalido !: ');
+				else window.alert('CPF ou CNPJ invalido !: ');
 			}
 		}
 </script>
